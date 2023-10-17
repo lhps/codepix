@@ -1,4 +1,4 @@
-module github.com/lhps/codepix
+module github.com/lhps/codepix-go
 
 go 1.15
 
