@@ -13,6 +13,7 @@ type PixKeyRepositoryInterface interface {
 	AddBank(bank *Bank) error
 	AddAccount(account *Account) error
 	FindAccount(id string) (*Account, error)
+	FindBank(id string) (*Bank, error)
 }
 
 func init() {

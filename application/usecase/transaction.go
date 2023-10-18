@@ -44,7 +44,7 @@ func (t *TransactionUseCase) Register(accountId string, amount float64, pixKeyTo
 func (t *TransactionUseCase) Confirm(transactionId string) (*model.Transaction, error) {
 	transaction, err := t.TransactionRepository.Find(transactionId)
 	if err != nil {
-		log.Printf("Transaction not found", transactionId)
+		log.Println("Transaction not found", transactionId)
 		return nil, err
 	}
 
@@ -60,7 +60,7 @@ func (t *TransactionUseCase) Confirm(transactionId string) (*model.Transaction, 
 func (t *TransactionUseCase) Complete(transactionId string) (*model.Transaction, error) {
 	transaction, err := t.TransactionRepository.Find(transactionId)
 	if err != nil {
-		log.Printf("Transaction not found", transactionId)
+		log.Println("Transaction not found", transactionId)
 		return nil, err
 	}
 
@@ -76,7 +76,7 @@ func (t *TransactionUseCase) Complete(transactionId string) (*model.Transaction,
 func (t *TransactionUseCase) Error(transactionId string, reason string) (*model.Transaction, error) {
 	transaction, err := t.TransactionRepository.Find(transactionId)
 	if err != nil {
-		log.Printf("Transaction not found", transactionId)
+		log.Println("Transaction not found", transactionId)
 		return nil, err
 	}
 
