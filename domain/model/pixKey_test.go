@@ -1,8 +1,9 @@
 package model_test
 
 import (
-	uuid "github.com/satori/go.uuid"
 	"testing"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/lhps/codepix-go/domain/model"
 	"github.com/stretchr/testify/require"
@@ -28,6 +29,10 @@ func TestModel_NewPixKey(t *testing.T) {
 	kind = "cpf"
 	_, err = model.NewPixKey(kind, key, account)
 	require.Nil(t, err)
+	
+	kind = "invalidkind"
+	_, err = model.NewPixKey(kind, key, account)
+	require.NotNil(t, err)
 
 	_, err = model.NewPixKey("nome", key, account)
 	require.NotNil(t, err)

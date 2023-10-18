@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"context"
+
 	"github.com/lhps/codepix-go/application/grpc/pb"
 	"github.com/lhps/codepix-go/application/usecase"
-	"google.golang.org/grpc"
 )
 
 type PixGrpcService struct {
@@ -12,7 +12,7 @@ type PixGrpcService struct {
 	pb.UnimplementedPixServiceServer
 }
 
-func (p *PixGrpcService) RegisterPixKey(ctx context.Context, in *pb.PixKeyRegistration, opts ...grpc.CallOption) (*pb.PixKeyCreatedResult, error) {
+func (p *PixGrpcService) RegisterPixKey(ctx context.Context, in *pb.PixKeyRegistration) (*pb.PixKeyCreatedResult, error) {
 	key, err := p.PixUseCase.RegisterKey(in.Key, in.Kind, in.AccountId)
 	if err != nil {
 		return &pb.PixKeyCreatedResult{
@@ -51,6 +51,7 @@ func (p *PixGrpcService) Find(ctx context.Context, in *pb.PixKey) (*pb.PixKeyInf
 
 func NewPixGrpcService(usecase usecase.PixUseCase) *PixGrpcService {
 	return &PixGrpcService{
-		PixUseCase: usecase,
+		PixUseCase:                    usecase,
+		UnimplementedPixServiceServer: pb.UnimplementedPixServiceServer{},
 	}
 }
