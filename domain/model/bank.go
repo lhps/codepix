@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+func init() {
+	govalidator.SetFieldsRequiredByDefault(true)
+}
+
 type Bank struct {
 	Base     `valid:"required"`
 	Code     string     `json:"code" gorm:"type:varchar(20)" valid:"notnull"`

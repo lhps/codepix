@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"github.com/asaskevich/govalidator"
 	uuid "github.com/satori/go.uuid"
 	"time"
@@ -20,6 +21,10 @@ type TransactionRepositoryInterface interface {
 	Find(id string) (*Transaction, error)
 }
 
+func init() {
+	govalidator.SetFieldsRequiredByDefault(true)
+}
+
 type Transactions struct {
 	Transaction []Transaction
 }
@@ -27,12 +32,12 @@ type Transactions struct {
 type Transaction struct {
 	Base              `valid:"required"`
 	AccountFrom       *Account `valid:"-"`
-	AccountFromID     *Account `gorm:"column:account_from_id;type:uuid;" valid:"notnull"`
+	AccountFromID     string   `gorm:"column:account_from_id;type:uuid;" valid:"notnull"`
 	Amount            float64  `json:"amount" gorm:"type:float" valid:"notnull"`
 	PixKeyTo          *PixKey  `valid:"-"`
-	PixKeyIdTo        *PixKey  `gorm:"column:pix_key_id_to;type:uuid;" valid:"notnull"`
+	PixKeyIdTo        string   `gorm:"column:pix_key_id_to;type:uuid;" valid:"notnull"`
 	Status            string   `json:"status" gorm:"type:varchar(20)" valid:"notnull"`
-	Description       string   `json:"description" gorm:"type:varchar(255)" valid:"notnull"`
+	Description       string   `json:"description" gorm:"type:varchar(255)" valid:"-"`
 	CancelDescription string   `json:"cancel_description" gorm:"column:cancel_description;type:varchar(255)" valid:"-"`
 }
 
@@ -51,6 +56,7 @@ func (t *Transaction) isValid() error {
 		return errors.New("The source and destination account cannot be the same")
 	}
 
+	fmt.Println("ANTES DO IF AUQI", t)
 	if err != nil {
 		return err
 	}
@@ -61,16 +67,19 @@ func (t *Transaction) isValid() error {
 func NewTransaction(accountFrom *Account, amount float64, pixKeyTo *PixKey, description string) (*Transaction, error) {
 
 	transaction := Transaction{
-		AccountFrom: accountFrom,
-		Amount:      amount,
-		PixKeyTo:    pixKeyTo,
-		Status:      TransactionPending,
-		Description: description,
+		AccountFrom:   accountFrom,
+		AccountFromID: accountFrom.ID,
+		Amount:        amount,
+		PixKeyTo:      pixKeyTo,
+		PixKeyIdTo:    pixKeyTo.ID,
+		Status:        TransactionPending,
+		Description:   description,
 	}
 
 	transaction.ID = uuid.NewV4().String()
 	transaction.CreatedAt = time.Now()
 
+	fmt.Println("PASSANDO AQUI =>")
 	err := transaction.isValid()
 	if err != nil {
 		return nil, err
